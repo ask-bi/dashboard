@@ -2,12 +2,11 @@ extend layout
 
 block content
   .row 
-    - console.log(title)
-    //- - if (apps.length !== 0) {
-    //-     .col-md-4 
-    //-     div hi
-    //-     .col-md-8 
-    //-     div hi
-    //- - } else {
-    //-     div no apps yet.
-    //- - }
+    if apps.length 
+        div apps are present
+    else 
+        //- .col-md-2.col-md-offset-5.text-center.center-block
+        .col-4.mx-auto.text-center.mt-5
+            img(src="/box.png")
+            h5.text-secondary.mt-4 Your Box is Empty 
+            button.btn.btn-primary.mt-2(type="button") + Create App
