@@ -1,12 +1,90 @@
 extend layout 
 
 block content
-  .row 
-    if apps.length 
-        div apps are present
-    else 
-        //- .col-md-2.col-md-offset-5.text-center.center-block
-        .col-4.mx-auto.text-center.mt-5
-            img(src="/box.png")
-            h5.text-secondary.mt-4 Your Box is Empty 
-            button.btn.btn-primary.mt-2(type="button") + Create App
+  link(rel='stylesheet', href='/css/dashboard.css')
+  .row
+    .col-12
+        .float-right
+            button.btn.btn-primary(type="button",data-toggle="modal",data-target="#create-app-form") 
+                span.glyphicon.glyphicon-plus Create App
+    if apps.length
+        .col-4.mx-auto.mt-2#app-container 
+            h6.text-secondary.mt-4.lead Apps:
+            ul.c-list-group
+                each app in apps
+                    li.c-list-item.py-1(onclick='appChange(this)',id=app._id)
+                        = app.name
+        .col-8.mx-auto.bg-white.mt-2.vh-70 
+            .col-12.mx-auto.text-center.mt-5#empty-chat-box
+                img.mt-5(src="/compass.png", width="100px")
+                h6.text-secondary.mt-4.lead Select an app in the left to talk to your database
+            .h-100.flex-column.col-12.d-none#chat-box
+                div.h-100.d-flex.flex-column 
+                    div#heading.row.flex-column.border-bottom
+                        h1.text-secondary.mt-3.lead App Name
+                    div#body.row.flex-column 
+                        .col-12.mx-auto.text-center.mt-5
+                            img.mt-5(src="/chat.png", width="100px")
+                            h6.lead.text-primary.mt-3 How can I help you?
+                    div#controller.row.mt-auto.flex-column.border-top
+                        .input-group.py-2 
+                            input.form-control.d-flex(placeholder='Ask me!')
+                            span.input-group-btn.pt-2.pr-2
+                                i.fa.fa-microphone.text-primary
+                            span.input-group-btn.pt-2.pr-2
+                                i.fa.fa-paper-plane.text-primary
+
+    else
+        .col-12
+            .col-4.mx-auto.text-center.mt-5
+                img(src="/box.png")
+                h5.text-secondary.mt-4.lead Your Box is Empty. Click below to create your first app. 
+                button.btn.btn-primary.mt-2(type="button",data-toggle="modal",data-target="#create-app-form") 
+                    span.glyphicon.glyphicon-plus Create App
+    
+    #create-app-form.modal.fade.bs-example-modal-sm(tabindex='-1' role='dialog' aria-hidden='true')
+        .modal-dialog.modal-sm
+            .modal-content
+                .modal-body
+                    form(method="post", action="/apps")
+                        input(type='hidden', name='_csrf', value=_csrf)
+                        .form-group
+                            label(for='inputRPGName') App Name
+                            input#inputRPGName.form-control(name='name' type='text' placeholder='e-commerce mysql instance' autofocus='')
+                        .form-group
+                            label(for='inputRPGName') Adapter
+                            input#inputRPGName.form-control(name='adaptor' type='text' placeholder='Mysql | Mongo etc..' autofocus='')
+                        .form-group
+                            label(for='inputRPGName') Connection String
+                            input#inputRPGName.form-control(name='connectionString' type='text' placeholder='mysql://username:password@host' autofocus='')
+                        .form-group
+                            label(for='inputRPGName') Team
+                            input#inputRPGName.form-control(name='team' type='text' placeholder='Customer Success' autofocus='')
+                        .containerButtons
+                            button.floatLeft.btn.btn-default.btn48Percent(data-dismiss='modal') Cancel
+                            button#buttonChangeRPGName.floatRight.btn.btn-success.btn48Percent(type="submit") Save
+                .clear
+
+    script.
+        const apps = !{JSON.stringify(apps)}
+        const appWithID = (appID) => {
+            const app = apps.filter( app => appID === app._id );
+            return app[0];
+        }
+        let oldActiveAppID = undefined;
+        const appChange = (appElement) => {
+            const headerContainer = $('#chat-box').find('#heading').find('.lead');
+
+            const appID = $(appElement).attr('id');
+            $('#empty-chat-box').hide();
+            const chatBox = $('#chat-box');
+            chatBox.removeClass('d-none');
+            const trigger = $(`#${appID}`);
+            trigger.addClass('bg-white');
+            const app = appWithID(appID);
+            console.log(headerContainer, app);
+            headerContainer.text(app.name);
+            const oldActiveApp = $(`#${oldActiveAppID}`);
+            oldActiveApp.removeClass('bg-white');
+            oldActiveAppID = appID;
+        }

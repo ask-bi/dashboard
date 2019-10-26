@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const appsSchema = new mongoose.Schema({
-  userID: { type: String, index: true },
-  appName: String,
+  creator: { type: String, index: true },
+  name: String,
   connectionString: String,
   username: String,
   password: String,

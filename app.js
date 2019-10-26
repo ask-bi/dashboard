@@ -139,6 +139,8 @@ app.post('/signup', userController.postSignup);
 app.get('/contact', contactController.getContact);
 app.post('/contact', contactController.postContact);
 app.get('/dashboard', passportConfig.isAuthenticated, dashboardController.getDashboard);
+app.get('/settings', passportConfig.isAuthenticated, dashboardController.getDashboard);
+app.post('/apps', passportConfig.isAuthenticated, dashboardController.createApp);
 app.get('/account/verify', passportConfig.isAuthenticated, userController.getVerifyEmail);
 app.get('/account/verify/:token', passportConfig.isAuthenticated, userController.getVerifyEmailToken);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
