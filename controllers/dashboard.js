@@ -1,10 +1,13 @@
 const Apps = require('../models/Apps');
+const Teams = require('../models/Team');
 
 exports.getDashboard = async (req, res) => {
   const apps = await Apps.find({ creator: req.user._id });
+  const teams = await Teams.find({ creator: req.user._id });
   res.render('dashboard', {
     title: 'dashboard',
     apps,
+    teams
   });
 };
 
