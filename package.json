@@ -42,6 +42,7 @@
     "googleapis": "^44.0.0",
     "instagram-node": "^0.5.8",
     "jquery": "^3.4.1",
+    "knex": "^0.20.1",
     "lastfm": "^0.9.3",
     "lob": "^6.0.6",
     "lodash": "^4.17.15",

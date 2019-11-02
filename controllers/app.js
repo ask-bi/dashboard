@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const knex = require('knex')({ client: 'mysql' });
 
 const Apps = require('../models/Apps');
 const { getIntent } = require('../helpers/apis');
@@ -33,16 +34,35 @@ exports.getResponse = async (req, res) => {
     const tables = await tablesOfDB(connection, db);
     tMap.push({ database: db, tables });
   }
-  /**
-   * required : []
-   */
-  console.log(tMap);
+
   const r = await getIntent(command, tMap);
-  console.log(r);
+  const type = r.type;
+  const dbName = r.result.db_name;
+  const tableName = r.result.table_name;
+  const commandType = r.result.command_type;
+  if (type === 'as-is') {
+    connection.end();
+    return res.send({
+      type: 'plain_text',
+      content: type.body,
+    });
+  }
+  await execQuery(connection, `use ${dbName}`);
+  switch (commandType) {
+    case 'select_command':
+      return res.send({
+        type: 'table',
+        content: await knex(tableName).connection(connection).select('*'),
+      });
+      break;
+    default:
+      break;
+  }
   // fetch query
   // make connection and fetch data
   res.send({
     type: 'plain_text',
-    content: 'pong',
+    content: 'default',
   });
+  connection.end();
 };

@@ -113,6 +113,8 @@ block content
             $('#body').addClass('overflow-auto');
             const command = $('#controller').find('input').val();
             try {
+                insertRequest(command);
+                $('#controller').find('input').val('');
                 const data = await getResponse(command);
                 insertResponse(data);
             } catch (e) {
@@ -129,8 +131,8 @@ block content
                 });
             } );
         }
-        const userCloud = (content) => {
-            const html = `<div class='w-25 d-block bg-primary text-white p-2 rounded m-1'>${content}</div>`;
+        const userCloud = (content, color='bg-primary') => {
+            const html = `<div class='w-25 d-block ${color} text-white p-2 rounded m-1'>${content}</div>`;
             chatBox.append(html);
         }
         const botCloud = (html) => {
@@ -141,5 +143,11 @@ block content
                 case 'plain_text':
                 userCloud(response.content);
                 break;
+                case 'table':
+                userCloud(JSON.stringify(response.content));
+                break;
             }
+        }
+        const insertRequest = (request) => {
+            userCloud(request, 'bg-success');
         }
