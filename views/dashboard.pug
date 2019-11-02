@@ -22,16 +22,21 @@ block content
                 div.h-100.d-flex.flex-column 
                     div#heading.row.flex-column.border-bottom
                         h1.text-secondary.mt-3.lead App Name
-                    div#body.row.flex-column 
-                        .col-12.mx-auto.text-center.mt-5
-                            img.mt-5(src="/chat.png", width="100px")
-                            h6.lead.text-primary.mt-3 How can I help you?
+                    div#body.row.flex-column
+                        .col-12.mx-auto.text-center.mt-5#empty
+                            img.mt-3(src="/chat.png", width="100px")
+                            h5.lead.text-primary.mt-3 How can I help you?
+                            p.lead.text-secondary Examples of what I can do:
+                            span - show me available data 
+                            br
+                            span - show me number of users
+                        .col-12#bubble-container
                     div#controller.row.mt-auto.flex-column.border-top
                         .input-group.py-2 
                             input.form-control.d-flex(placeholder='Ask me!')
                             span.input-group-btn.pt-2.pr-2
                                 i.fa.fa-microphone.text-primary
-                            span.input-group-btn.pt-2.pr-2
+                            span.input-group-btn.pt-2.pr-2(onclick='send()')
                                 i.fa.fa-paper-plane.text-primary
 
     else
@@ -72,19 +77,61 @@ block content
             return app[0];
         }
         let oldActiveAppID = undefined;
+        let chatBox = undefined;
         const appChange = (appElement) => {
-            const headerContainer = $('#chat-box').find('#heading').find('.lead');
-
             const appID = $(appElement).attr('id');
+            const app = appWithID(appID);
+
+            $('#body').removeClass('overflow-auto').find('#empty').show();
+            const headerContainer = $('#chat-box').find('#heading').find('.lead');
+            headerContainer.text(app.name);
+
+
             $('#empty-chat-box').hide();
-            const chatBox = $('#chat-box');
-            chatBox.removeClass('d-none');
+            const chatWindow = $('#chat-box');
+            chatWindow.removeClass('d-none');
+            chatBox = chatWindow.find('#body').find('#bubble-container');
+            chatBox.html('');
+
             const trigger = $(`#${appID}`);
             trigger.addClass('bg-white');
-            const app = appWithID(appID);
-            console.log(headerContainer, app);
-            headerContainer.text(app.name);
+
             const oldActiveApp = $(`#${oldActiveAppID}`);
             oldActiveApp.removeClass('bg-white');
             oldActiveAppID = appID;
+        }
+        const send = async () => {
+            $('#body').find('#empty').hide();
+            $('#body').addClass('overflow-auto');
+            const command = $('#controller').find('input').val();
+            try {
+                const data = await getResponse(command);
+                insertResponse(data);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        const getResponse = async (command) => {
+            const uri = `/data/${oldActiveAppID}?command=${command}`;
+            return new Promise( (resolve, reject) => {
+                $.get(uri, (data, textStatus, jqXHR) => {
+                    resolve(data);
+                }).fail((e) => {
+                    reject(e);
+                });
+            } );
+        }
+        const userCloud = (content) => {
+            const html = `<div class='w-25 d-block bg-primary text-white p-2 rounded m-1'>${content}</div>`;
+            chatBox.append(html);
+        }
+        const botCloud = (html) => {
+
+        }
+        const insertResponse = (response) => {
+            switch(response.type) {
+                case 'plain_text':
+                userCloud(response.content);
+                break;
+            }
         }
