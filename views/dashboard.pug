@@ -58,13 +58,21 @@ block content
                             input#inputRPGName.form-control(name='name' type='text' placeholder='e-commerce mysql instance' autofocus='')
                         .form-group
                             label(for='inputRPGName') Adapter
-                            input#inputRPGName.form-control(name='adaptor' type='text' placeholder='Mysql | Mongo etc..' autofocus='')
+                            select.form-control(name='adaptor')
+                                option MySQL 
+                                option Mongo 
+                                option Elastic Search
+                                option DynamoDB
                         .form-group
                             label(for='inputRPGName') Connection String
                             input#inputRPGName.form-control(name='connectionString' type='text' placeholder='mysql://username:password@host' autofocus='')
-                        .form-group
-                            label(for='inputRPGName') Team
-                            input#inputRPGName.form-control(name='team' type='text' placeholder='Customer Success' autofocus='')
+                        if teams.length
+                            .form-group
+                                label(for='inputRPGName') Team
+                                select.form-control(name='team')
+                                    each team in teams
+                                        option= team.name
+                        a.pull-right.pt-4.pb-4(href='/teams',target='_blank') + create team
                         .containerButtons
                             button.floatLeft.btn.btn-default.btn48Percent(data-dismiss='modal') Cancel
                             button#buttonChangeRPGName.floatRight.btn.btn-success.btn48Percent(type="submit") Save
