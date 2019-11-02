@@ -35,6 +35,7 @@ const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
 const dashboardController = require('./controllers/dashboard');
 const appController = require('./controllers/app');
+const teamController = require('./controllers/team');
 
 /**
  * API keys and Passport configuration.
@@ -143,6 +144,8 @@ app.get('/dashboard', passportConfig.isAuthenticated, dashboardController.getDas
 app.get('/data/:appID', passportConfig.isAuthenticated, appController.getResponse);
 app.get('/settings', passportConfig.isAuthenticated, dashboardController.getDashboard);
 app.post('/apps', passportConfig.isAuthenticated, dashboardController.createApp);
+app.get('/teams', passportConfig.isAuthenticated, teamController.showForm);
+app.post('/teams', passportConfig.isAuthenticated, teamController.createTeam);
 app.get('/account/verify', passportConfig.isAuthenticated, userController.getVerifyEmail);
 app.get('/account/verify/:token', passportConfig.isAuthenticated, userController.getVerifyEmailToken);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);

@@ -1,0 +1,32 @@
+extend layout 
+
+block content
+    //- team create form
+    form(action='/teams', method='post')
+        input(type='hidden', name='_csrf', value=_csrf)
+        .form-group
+            label(for='name') Team Name:
+            input.form-control(type='name', name='name')
+        .form-group#teammates-input
+            label(for='email') Members:
+            input.form-control.pb-2(type='email', name='users[]')
+        p
+            a#add-more-users(onclick='addInput()') + add more users
+        button.btn.btn-default(type='submit') Create
+
+    if teams.length
+        .col-12
+            h6.text-secondary.mt-4.lead Teams:
+            ul.c-list-group
+                each team in teams
+                    li.c-list-item.py-1(onclick='',id=team._id)
+                        = team.name 
+                        span  (#{team.users.length})
+
+    script.
+        const addInput = () => {
+            const teamContainer = $('#teammates-input');
+            teamContainer.append(`
+                <input class='form-control' type=='email' name='users[]'>
+            `);
+        }
