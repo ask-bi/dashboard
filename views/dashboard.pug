@@ -116,10 +116,11 @@ block content
                 insertRequest(command);
                 $('#controller').find('input').val('');
                 const data = await getResponse(command);
+                console.log(data.type, data.content[0].count)
                 if (data.type == 'table')
                     insertResponse(data);
-                else (data.type == 'count')
-                    insertResponse(data.content[0].count);
+                if (data.type == 'count')
+                    insertResponse(data);
             } catch (e) {
                 console.error(e);
             }
@@ -145,6 +146,12 @@ block content
                 break;
                 case 'table':
                 userCloud(JSON.stringify(response.content));
+                break;
+                case 'count':
+                userCloud(response.content[0].count);
+                break;
+                default:
+                userCloud(`could not figure that out [ERR:F-1].`);
                 break;
             }
         }
