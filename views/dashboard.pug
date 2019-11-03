@@ -151,7 +151,8 @@ block content
                 userCloud(response.content);
                 break;
                 case 'table':
-                userCloud(JSON.stringify(response.content));
+                const tableHTML = formatTable(response.content);
+                userCloud(tableHTML);
                 break;
                 case 'count':
                 userCloud(response.content[0].count);
@@ -163,4 +164,20 @@ block content
         }
         const insertRequest = (request) => {
             userCloud(request, 'bg-success');
+        }
+        const formatTable = (content) => {
+        	let container = $('<p>');
+            let tHyper = $('<table class="table table-bordered">');
+            $.each(content, function(i, item) {
+                // create the header
+                let row = $('<tr>');
+                $.each(item, (key, value) => {
+                    row.append(
+                        $('<td>').text(value)
+                    );
+                });
+                tHyper.append(row);
+            });
+            container.append(tHyper);
+            return container.html();
         }
