@@ -33,10 +33,10 @@ block content
                         .col-12#bubble-container
                     div#controller.row.mt-auto.flex-column.border-top
                         .input-group.py-2 
-                            input.form-control.d-flex(placeholder='Ask me!')
+                            input.form-control.d-flex#user-inputbox(placeholder='Ask me!')
                             span.input-group-btn.pt-2.pr-2
                                 i.fa.fa-microphone.text-primary
-                            span.input-group-btn.pt-2.pr-2(onclick='send()')
+                            span.input-group-btn.pt-2.pr-2#send-btn(onclick='send()')
                                 i.fa.fa-paper-plane.text-primary
 
     else
@@ -87,6 +87,11 @@ block content
         let oldActiveAppID = undefined;
         let chatBox = undefined;
         const appChange = (appElement) => {
+            $("#user-inputbox").keyup(function(event) {
+                if (event.keyCode === 13) {
+                    $("#send-btn").click();
+                }
+            });
             const appID = $(appElement).attr('id');
             const app = appWithID(appID);
 
@@ -138,6 +143,7 @@ block content
         const userCloud = (content, color='bg-primary') => {
             const html = `<div class='w-25 d-block ${color} text-white p-2 rounded m-1'>${content}</div>`;
             chatBox.append(html);
+            $('#body').scrollTop($('#body').prop("scrollHeight"));
         }
         const insertResponse = (response) => {
             switch(response.type) {
