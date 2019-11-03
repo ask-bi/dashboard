@@ -116,7 +116,10 @@ block content
                 insertRequest(command);
                 $('#controller').find('input').val('');
                 const data = await getResponse(command);
-                insertResponse(data);
+                if (data.type == 'table')
+                    insertResponse(data);
+                else (data.type == 'count')
+                    insertResponse(data.content[0].count);
             } catch (e) {
                 console.error(e);
             }
@@ -134,9 +137,6 @@ block content
         const userCloud = (content, color='bg-primary') => {
             const html = `<div class='w-25 d-block ${color} text-white p-2 rounded m-1'>${content}</div>`;
             chatBox.append(html);
-        }
-        const botCloud = (html) => {
-
         }
         const insertResponse = (response) => {
             switch(response.type) {

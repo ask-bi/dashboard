@@ -36,6 +36,7 @@ exports.getResponse = async (req, res) => {
   }
 
   const r = await getIntent(command, tMap);
+  console.log(r);
   const type = r.type;
   const dbName = r.result.db_name;
   const tableName = r.result.table_name;
@@ -54,7 +55,11 @@ exports.getResponse = async (req, res) => {
         type: 'table',
         content: await knex(tableName).connection(connection).select('*'),
       });
-      break;
+    case 'select_count_command':
+      return res.send({
+        type: 'count',
+        content: await knex(tableName).connection(connection).count('* as count'),
+      });
     default:
       break;
   }
